@@ -1,0 +1,80 @@
+---
+title: "Boston Crime Data EDA"
+author: "Joseph Sepich"
+date: "2019-07-31"
+output: 
+  html_document:
+    keep_md: yes
+  html_notebook: default
+---
+
+# Front matter
+
+```{r message = FALSE, warning = FALSE}
+# always clean up R environment
+rm(list = ls())
+# load all packages here
+library(mdsr) # book package of utilities
+library(tidyr) # tidyverse utilities
+library(lubridate) # date utility package
+library(data.table) # using fread function
+library(tidyverse) # utitlity package
+```
+
+# Obtaining the data
+
+## Import data
+
+```{r}
+crime_data <- fread("Data/crimes-in-boston/crime.csv")
+offense_codes <- fread("Data/crimes-in-boston/offense_codes.csv")
+```
+
+```{r}
+head(crime_data)
+```
+
+```{r}
+str(crime_data)
+```
+
+```{r}
+str(offense_codes)
+```
+
+The cases of the csv are in a tidy format, but we can combine the information stored in the csv. We can also convert some data types. For instance the OCCURRED_ON_DATE field contains all the information regarding time data. We can transform this into a date time field. One question to answer after that is if shooting is a boolean type field or not.
+
+## Remove redundant columns
+
+Let's consolidate our time fields and our location information.
+
+```{r}
+crime_data_tidy <- crime_data %>%
+  select(-c(YEAR,MONTH,DAY_OF_WEEK,HOUR,Location))
+
+str(crime_data_tidy)
+```
+
+## Cast types
+
+Now let's convert the OCCURRED_ON_DATE field to a date field.
+
+```{r}
+crime_data_tidy$OCCURRED_ON_DATE <- ymd_hms(crime_data_tidy$OCCURRED_ON_DATE)
+
+str(crime_data_tidy$OCCURRED_ON_DATE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
