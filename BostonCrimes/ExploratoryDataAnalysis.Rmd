@@ -26,7 +26,7 @@ library(tidyverse) # utitlity package
 ## Import data
 
 ```{r}
-crime_data <- fread("Data/crimes-in-boston/crime.csv")
+crime_data <- fread("Data/tmpney_to1g.csv")
 offense_codes <- fread("Data/crimes-in-boston/offense_codes.csv")
 ```
 
@@ -53,6 +53,11 @@ crime_data_tidy <- crime_data %>%
   select(-c(YEAR,MONTH,DAY_OF_WEEK,HOUR,Location))
 
 str(crime_data_tidy)
+```
+
+```{r}
+crime_data_tidy %>%
+  write.csv("Data/tidy_crimes.csv")
 ```
 
 ## Cast types
