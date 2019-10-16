@@ -1,0 +1,85 @@
+---
+title: "Time Tracking EDA"
+author: "Joseph Sepich"
+date: "2019-10-16"
+output: 
+  html_notebook: default
+  html_document:
+    keep_md: yes
+---
+
+# Background
+
+I have begun tracking how I spend my time. I can export those records into a relational table that are imported here. What can I discover about my time management? How much time do I allocate to work compared to leisure? Let's find out.
+
+```{r echo=FALSE}
+# import packages
+library(tidyverse)
+library(data.table)
+library(lubridate)
+library(ggplot2)
+```
+
+# Inspect data
+
+```{r}
+time_table <- fread("./Data/time_data_10_16.csv")
+```
+
+```{r}
+str(time_table)
+```
+
+```{r}
+head(time_table, 10)
+```
+
+```{r}
+tail(time_table, 10)
+```
+
+# Overall Time Spent
+
+
+## Time spent per Task
+
+```{r}
+time_table %>%
+  group_by(Task, Project) %>%
+  summarise(total_duration = sum(`Decimal Duration`)) %>%
+  ggplot(aes(x=reorder(Task, total_duration),y=total_duration,fill=Project)) +
+    geom_bar(stat='identity') +
+    coord_flip() +
+    xlab('Task Name') +
+    ylab('Duration in Hours') +
+    ggtitle('Total Task Duration')
+```
+
+## Time spen per Project
+
+```{r}
+time_table %>%
+  group_by(Project) %>%
+  summarise(total_duration = sum(`Decimal Duration`)) %>%
+  ggplot(aes(x=reorder(Project, total_duration),y=total_duration)) +
+    geom_bar(stat='identity') +
+    coord_flip() +
+    xlab('Project Name') +
+    ylab('Duration in Hours') +
+    ggtitle('Total Project Duration')
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
