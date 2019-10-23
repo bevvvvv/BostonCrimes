@@ -23,7 +23,7 @@ library(ggplot2)
 # Inspect data
 
 ```{r}
-time_table <- fread("./Data/time_data_10_16.csv")
+time_table <- fread("./Data/time_data_10_23.csv")
 ```
 
 ```{r}
@@ -55,7 +55,7 @@ time_table %>%
     ggtitle('Total Task Duration')
 ```
 
-## Time spen per Project
+## Time spent per Project
 
 ```{r}
 time_table %>%
@@ -69,11 +69,58 @@ time_table %>%
     ggtitle('Total Project Duration')
 ```
 
+# Projecct times
 
+### Convert dates
 
+```{r}
+time_data <- time_table
 
+time_data$Start <- ymd_hm(time_table$Start)
+time_data$End <-ymd_hm(time_table$End)
 
+time_data$StartHour <- hour(time_table$Start)
+time_data$StartDay <- yday(time_table$Start)
+time_data$StartWeekDay <- wday(time_table$Start, TRUE)
+time_data$StartHourMinute <- minute(time_table$Start)
+str(time_data)
+```
 
+## Density through year
+
+```{r}
+time_data %>%
+  ggplot(aes(x=StartDay, color=Task)) +
+    geom_density() +
+    facet_wrap(.~Project) +
+    xlab('Day of Year') +
+    ylab('Density') +
+    ggtitle('Frequency of Project by Day')
+```
+
+## Density through day
+
+```{r}
+time_data %>%
+  ggplot(aes(x=StartHour, color=Task)) +
+    geom_density() +
+    facet_wrap(.~Project) +
+    xlab('Hour of Day') +
+    ylab('Density') +
+    ggtitle('Frequency of Project by Hour')
+```
+
+### Personal Project
+
+```{r}
+time_data %>%
+  filter(Project=="Personal") %>%
+  ggplot(aes(x=StartHour, color=Task)) +
+    geom_density() +
+    xlab('Hour of Day') +
+    ylab('Density') +
+    ggtitle('Frequency of Project by Hour')
+```
 
 
 
