@@ -23,7 +23,7 @@ library(ggplot2)
 # Inspect data
 
 ```{r}
-time_table <- fread("./Data/time_data_10_23.csv")
+time_table <- fread("./Data/time_data_11_14.csv")
 ```
 
 ```{r}
@@ -122,7 +122,35 @@ time_data %>%
     ggtitle('Frequency of Project by Hour')
 ```
 
+## Work Hours
 
+I want to know roughly how much I work in a week. Do I work more, less, or the same as a full time employee? How does my productivity shift throughout a single week?
+
+```{r}
+time_data$StartWeek <- week(time_table$Start)
+```
+
+```{r}
+working_data <- time_data %>%
+  filter(Project %in% c("SchoolWork","Work")) %>%
+  group_by(StartWeek) %>%
+  summarise(totalHours=sum(`Decimal Duration`))
+```
+
+```{r}
+working_data
+
+mean(working_data$totalHours)
+```
+
+```{r}
+time_data %>%
+  filter(Project %in% c("SchoolWork","Work")) %>%
+  group_by(StartWeekDay) %>%
+  summarise(totalHours=mean(`Decimal Duration`)) %>%
+  ggplot(aes(x=StartWeekDay,y=totalHours)) +
+  geom_point()
+```
 
 
 
