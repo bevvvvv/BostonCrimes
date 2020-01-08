@@ -73,6 +73,10 @@ for r in range(rows):
         node_name = 'r'+str(r)+'c'+str(c)
         g.add_vertex(node_name)
 
+# add source and target edges
+g.add_vertex('source')
+g.add_vertex('target')
+
 for r in range(rows):
     for c in range(cols):
         # create incoming edges
@@ -89,11 +93,49 @@ for r in range(rows):
         if c < cols - 1:
             source = 'r'+str(r)+'c'+str(c+1)
             g.add_edge(source, node_name, grid[r][c])
+        if c == cols-1:
+            g.add_edge(node_name, 'target', 0)
         # West
         if c > 0:
             source = 'r'+str(r)+'c'+str(c-1)
             g.add_edge(source, node_name, grid[r][c])
+        if c == 0:
+            g.add_edge('source', node_name, grid[r][c])
 
-import pdb
-pdb.set_trace()
 
+# modified dijkstra algorithm (dist is max edge so far)
+import sys
+max_edge = {}
+processed = {}
+for node in g.get_vertices():
+    max_edge[node] = sys.maxunicode
+    processed[node] = False
+max_edge['source'] = 0 
+
+for cout in range(g.num_vertices): 
+
+    # Pick the minimum edge vertex from  
+    # the set of vertices not yet processed
+    min = sys.maxunicode
+    u = ''
+    for node in g.get_vertices():
+        if max_edge[node] < min and processed[node] == False:
+            min = max_edge[node]
+            u = node
+
+    # Add vertex to processed node set
+    processed[u] = True
+    if u == 'target':
+        break
+
+    # Update edge value of the adjacent vertices
+    adjacent_keys = g.get_vertex(u).get_connections()
+    for key in adjacent_keys:
+        if processed[key.id] == True:
+            continue
+        edge_weight = g.get_vertex(u).get_weight(g.get_vertex(key.id))
+        value = max(edge_weight, max_edge[u])
+        if value < max_edge[key.id]:
+            max_edge[key.id] = value
+
+print(max_edge['target'])
